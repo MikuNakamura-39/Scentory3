@@ -1,16 +1,16 @@
 spring:
   datasource:
-    url: jdbc:h2:file:./data/scentory-admin;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DATABASE_URL:jdbc:h2:file:./data/scentory3;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
   h2:
     console:
-      enabled: true
+      enabled: ${H2_CONSOLE_ENABLED:true}
       path: /h2-console
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${JPA_DDL_AUTO:update}
     open-in-view: false
     properties:
       hibernate:
@@ -19,4 +19,4 @@ spring:
     cache: false
 
 server:
-  port: 8080
+  port: ${PORT:8080}
