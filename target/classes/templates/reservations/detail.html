@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>予約詳細</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">予約詳細</h1>
+            <div class="inline-actions"><a class="btn secondary" th:href="@{/reservations}">一覧へ戻る</a><a class="btn" th:href="@{'/reservations/' + ${reservation.id} + '/edit'}">編集</a></div>
+        </div>
+        <div class="flash" th:if="${message}" th:text="${message}"></div>
+        <div class="error-box" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+        <div class="card detail-card-single">
+            <h2>予約情報</h2>
+            <div class="detail-list">
+                <div><span>予約番号</span><strong th:text="${reservation.reservationNumber}"></strong></div>
+                <div><span>状態</span><strong th:text="${reservation.status.label}"></strong></div>
+                <div><span>顧客</span><strong th:text="${reservation.customer != null ? reservation.customer.fullName : '-'}"></strong></div>
+                <div><span>人数</span><strong th:text="${reservation.partySize + '名'}"></strong></div>
+                <div><span>チャネル</span><strong th:text="${reservation.channel}"></strong></div>
+                <div><span>担当スタッフ</span><strong th:text="${reservation.assignedStaff != null ? reservation.assignedStaff.name : '未設定'}"></strong></div>
+                <div><span>予約日時</span><strong th:text="${reservation.timeSlot != null ? #temporals.format(reservation.timeSlot.startAt, 'yyyy/MM/dd HH:mm') : '-'}"></strong></div>
+                <div><span>メニュー</span><strong th:text="${reservation.workshopMenu != null ? reservation.workshopMenu.name : '-'}"></strong></div>
+                <div><span>返金額</span><strong th:text="${reservation.refundAmount != null ? #numbers.formatDecimal(reservation.refundAmount,0,'COMMA',0,'POINT') + '円' : '-'}"></strong></div>
+                <div><span>キャンセルメモ</span><strong th:text="${reservation.cancellationNote != null && !reservation.cancellationNote.isBlank() ? reservation.cancellationNote : '-'}"></strong></div>
+            </div>
+            <div class="detail-actions-block" th:if="${reservation.status.name() != 'CANCELLED'}">
+                <div class="detail-form-section">
+                    <h2>ステータス更新</h2>
+                    <form th:action="@{'/reservations/' + ${reservation.id} + '/status'}" method="post">
+                        <div class="field">
+                            <label>新しいステータス</label>
+                            <select name="status">
+                                <option th:each="status : ${T(com.scentory.admin.model.ReservationStatus).values()}" th:value="${status.name()}" th:text="${status.label}" th:selected="${reservation.status == status}"></option>
+                            </select>
+                        </div>
+                        <div class="actions"><button class="btn" type="submit">ステータス更新</button></div>
+                    </form>
+                </div>
+                <div class="detail-form-section">
+                    <h2>予約キャンセル</h2>
+                    <form th:action="@{'/reservations/' + ${reservation.id} + '/cancel'}" method="post">
+                        <div class="field"><label>返金額</label><input type="number" min="0" step="100" name="refundAmount" placeholder="必要な場合のみ入力"></div>
+                        <div class="field">
+                            <label>キャンセル理由</label>
+                            <select name="cancellationNote" required>
+                                <option value="">選択してください</option>
+                                <option value="お客様都合（日時変更）">お客様都合（日程変更）</option>
+                                <option value="お客様都合（来店不可）">お客様都合（来店不可）</option>
+                                <option value="体調不良">体調不良</option>
+                                <option value="重複予約">重複予約</option>
+                                <option value="店舗都合">店舗都合</option>
+                                <option value="無断キャンセル">無断キャンセル</option>
+                            </select>
+                        </div>
+                        <div class="actions"><button class="btn danger" type="submit">キャンセル確定</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

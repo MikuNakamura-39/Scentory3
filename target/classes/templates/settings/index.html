@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>システム設定</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+    <main class="main settings-page">
+        <h1 class="page-title">システム設定</h1>
+        <div class="flash" th:if="${message}" th:text="${message}"></div>
+        <table><tr><th>キー</th><th>値</th></tr><tr th:each="item : ${settings}"><td data-label="キー" th:text="${item.settingKey}"></td><td data-label="値" th:text="${item.settingValue}"></td></tr></table>
+        <form th:action="@{/settings/save}" th:object="${setting}" method="post" style="margin-top:18px;">
+            <div class="grid two"><div class="field"><label>設定キー</label><input th:field="*{settingKey}"></div><div class="field"><label>設定値</label><input th:field="*{settingValue}"></div></div>
+            <div class="actions"><button class="btn" type="submit">保存</button></div>
+        </form>
+    </main>
+</div>
+</body>
+</html>
