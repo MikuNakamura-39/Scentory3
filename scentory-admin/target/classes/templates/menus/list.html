@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品・メニュー管理</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="app-shell">
+    <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">商品・メニュー管理</h1>
+            <a class="btn" th:href="@{/menus/new}">コース登録</a>
+        </div>
+        <table>
+            <tr><th>コース名</th><th>価格</th><th>所要時間</th><th></th></tr>
+            <tr th:each="item : ${menus}">
+                <td data-label="コース名" th:text="${item.name}"></td>
+                <td data-label="価格" th:text="${item.price}"></td>
+                <td data-label="所要時間" th:text="${item.durationMinutes + '分'}"></td>
+                <td data-label="操作">
+                    <div class="inline-actions">
+                        <a class="mini-btn" th:href="@{'/menus/' + ${item.id} + '/edit'}">編集</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </main>
+</div>
+</body>
+</html>
